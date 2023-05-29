@@ -1,8 +1,8 @@
 import 'mocha';
 import * as chai from 'chai';
 import * as fs from 'fs';
-import {generalParser} from '../../src/parse';
 import {customerListBuilder, ICustomerRoot} from '../../src/resources/customer/getCustomerList';
+import {generalParser} from '../../src/parse';
 
 /*
 <Root>

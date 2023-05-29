@@ -1,3 +1,4 @@
+import 'cross-fetch/polyfill';
 import crypto from 'crypto';
 
 export type NetvisorRequest<T, U> = {
@@ -68,7 +69,6 @@ export class ApiProvider implements IApiProvider {
 		}
 		const request = new Request(url, {
 			method,
-			headers: new Headers(),
 		});
 
 		request.headers.set('X-Netvisor-Application-Sender', this.config.client);
