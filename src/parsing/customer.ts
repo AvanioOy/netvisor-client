@@ -1,4 +1,4 @@
-import {rootParser, stringValue, XmlMappingSchema, setLogger, directArraySchemaValue} from '@avanio/xml-mapper';
+import {directArraySchemaValue, rootParser, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
 import {DOMParser} from '@xmldom/xmldom';
 
 export type ICustomer = {
@@ -31,7 +31,6 @@ const customerListBuilder: XmlMappingSchema<IRoot> = {
 
 export function getCustomerList(xmlData: string): IRoot {
 	const doc = new DOMParser().parseFromString(xmlData, 'text/xml');
-	setLogger(console);
 	return rootParser<IRoot>(doc.documentElement, customerListBuilder, {
 		ignoreCase: true,
 	});
