@@ -1,5 +1,12 @@
-import {directArraySchemaValue, rootParser, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
-import {DOMParser} from '@xmldom/xmldom';
+import {directArraySchemaValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
+import {generalParser, parse} from '../../parse';
+import {IApiProvider} from '../../api';
+
+export interface IParams {
+	keyword?: string;
+	changedsince?: string;
+	customercodelist?: string;
+}
 
 export type ICustomer = {
 	netvisorkey: string;
@@ -21,17 +28,19 @@ const customerBuilder: XmlMappingSchema<ICustomer> = {
 	uri: {mapper: stringValue, required: true},
 };
 
-export type IRoot = {
+export type ICustomerRoot = {
 	customers: ICustomer[];
 };
 
-const customerListBuilder: XmlMappingSchema<IRoot> = {
+export const customerListBuilder: XmlMappingSchema<ICustomerRoot> = {
 	customers: {mapper: directArraySchemaValue('customerList', customerBuilder), required: true},
 };
 
-export function getCustomerList(xmlData: string): IRoot {
-	const doc = new DOMParser().parseFromString(xmlData, 'text/xml');
-	return rootParser<IRoot>(doc.documentElement, customerListBuilder, {
-		ignoreCase: true,
+export default async function (api: IApiProvider, params: IParams | undefined = undefined) {
+	return api.request({
+		method: 'GET',
+		params,
+		parse: parse(generalParser(customerListBuilder)),
+		path: '/customerlist.nv',
 	});
 }

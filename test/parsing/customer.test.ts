@@ -1,7 +1,9 @@
 import 'mocha';
 import * as chai from 'chai';
 import * as fs from 'fs';
-import {getCustomerList} from '../../src/parsing';
+import {generalParser} from '../../src/parse';
+import {customerListBuilder, ICustomerRoot} from '../../src/resources/customer/getCustomerList';
+
 /*
 <Root>
     <Customerlist>
@@ -55,8 +57,9 @@ const expect = chai.expect;
 describe('index.ts', () => {
 	describe('hello', () => {
 		it('should return customer', () => {
-			const customers = getCustomerList(res);
-			expect(customers.customers).to.be.deep.equal(expectedCustomers);
+			const parser = generalParser(customerListBuilder);
+			const result = parser(res);
+			expect(result).to.be.deep.equal({customers: expectedCustomers} as ICustomerRoot);
 		});
 	});
 });
