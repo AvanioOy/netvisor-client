@@ -1,0 +1,22 @@
+<Root>
+    <Customerlist>
+        <Customer>
+            <Netvisorkey>1</Netvisorkey>
+            <Name>Temporary customer</Name>
+            <Code>TEMP</Code>
+            <OrganisationIdentifier />
+	    <CustomerGroupID />
+	    <CustomerGroupName />
+            <Uri>/getcustomer.nv?id=1</Uri>
+        </Customer>
+        <Customer>
+            <Netvisorkey>2</Netvisorkey>
+            <Name>Customer Oy</Name>
+            <Code>11</Code>
+            <OrganisationIdentifier>6554467-4</OrganisationIdentifier>
+	    <CustomerGroupID>1</CustomerGroupID>
+	    <CustomerGroupName>Test customer</CustomerGroupName>
+            <Uri>/getcustomer.nv?id=2</Uri>
+        </Customer>
+    </Customerlist>
+</Root>
