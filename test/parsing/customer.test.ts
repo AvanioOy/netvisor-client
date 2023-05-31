@@ -34,7 +34,7 @@ const res = fs.readFileSync(fileName).toString();
 
 const expectedCustomers = [
 	{
-		netvisorkey: '1',
+		netvisorkey: 1,
 		name: 'Temporary customer',
 		code: 'TEMP',
 		organisationIdentifier: null,
@@ -43,7 +43,7 @@ const expectedCustomers = [
 		uri: '/getcustomer.nv?id=1',
 	},
 	{
-		netvisorkey: '2',
+		netvisorkey: 2,
 		name: 'Customer Oy',
 		code: '11',
 		organisationIdentifier: '6554467-4',

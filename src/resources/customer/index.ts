@@ -1,3 +1,4 @@
 import getCustomerList from './getCustomerList';
+import postCustomer from './postCustomer';
 
-export {getCustomerList};
+export {getCustomerList, postCustomer};

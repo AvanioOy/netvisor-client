@@ -1,4 +1,4 @@
-import {directArraySchemaValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
+import {directArraySchemaValue, integerValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
 import {generalParser, parse} from '../../parse';
 import {IApiProvider} from '../../api';
 
@@ -9,7 +9,7 @@ export interface IParams {
 }
 
 export type ICustomer = {
-	netvisorkey: string;
+	netvisorkey: number;
 	name: string;
 	code: string;
 	organisationIdentifier: string;
@@ -23,7 +23,7 @@ const customerBuilder: XmlMappingSchema<ICustomer> = {
 	customerGroupId: {mapper: stringValue},
 	customerGroupName: {mapper: stringValue},
 	name: {mapper: stringValue, required: true},
-	netvisorkey: {mapper: stringValue, required: true},
+	netvisorkey: {mapper: integerValue, required: true},
 	organisationIdentifier: {mapper: stringValue},
 	uri: {mapper: stringValue, required: true},
 };

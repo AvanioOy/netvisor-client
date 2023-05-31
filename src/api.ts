@@ -4,8 +4,9 @@ import crypto from 'crypto';
 export type NetvisorRequest<T, U> = {
 	path: string;
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-	parse: (response: Response) => Promise<T>;
+	parse?: (response: Response) => Promise<T>;
 	params?: U | undefined;
+	body?: string;
 };
 
 export interface IConfig {
@@ -20,7 +21,7 @@ export interface IConfig {
 }
 
 export interface IConfigProvider {
-	getConfig(): Promise<IConfig>;
+	getConfig: Promise<IConfig> | IConfig | (() => Promise<IConfig>);
 }
 
 export class ConfigProvider implements IConfigProvider {
@@ -29,14 +30,12 @@ export class ConfigProvider implements IConfigProvider {
 		this.config = config;
 	}
 
-	public async getConfig(): Promise<IConfig> {
-		return this.config;
-	}
+	getConfig = async () => this.config;
 }
 
 export interface IApiProvider {
-	handleRequest(url: string, params: Record<string, string>, method: string, config: IConfig): Promise<Request>;
-	request<T, U>(request: NetvisorRequest<T, U>): Promise<T>;
+	handleRequest(url: string, params: Record<string, string>, method: string, body: string): Promise<Request>;
+	request<T, U>(request: NetvisorRequest<T, U>): Promise<T | null>;
 }
 
 export class ApiProvider implements IApiProvider {
@@ -46,17 +45,17 @@ export class ApiProvider implements IApiProvider {
 		this.configProvider = configProvider;
 	}
 
-	public async request<T, U>(request: NetvisorRequest<T, U>): Promise<T> {
+	public async request<T, U>(request: NetvisorRequest<T, U>): Promise<T | null> {
 		await this.ensureConfig();
 		const url = `${this.config.baseUrl}${request.path}`;
-		const withAuth = await this.handleRequest(url, request.params || {}, request.method);
+		const withAuth = await this.handleRequest(url, request.params ?? {}, request.method, request.body || '');
 
 		const response = await fetch(withAuth);
 		if (!response.ok) throw new Error(response.statusText);
-		return request.parse(response);
+		return request.parse ? request.parse(response) : null;
 	}
 
-	public async handleRequest(url: string, params: Record<string, string>, method: string): Promise<Request> {
+	public async handleRequest(url: string, params: Record<string, string>, method: string, body: string): Promise<Request> {
 		await this.ensureConfig();
 		const transId = `TRANSID${Math.random() * 100000000000000000}`;
 		const timestamp = new Date().toISOString();
@@ -69,6 +68,7 @@ export class ApiProvider implements IApiProvider {
 		}
 		const request = new Request(url, {
 			method,
+			body,
 		});
 
 		request.headers.set('X-Netvisor-Application-Sender', this.config.client);
@@ -78,13 +78,13 @@ export class ApiProvider implements IApiProvider {
 		request.headers.set('X-Netvisor-Organisation-ID', this.config.organisationId);
 		request.headers.set('X-Netvisor-Authentication-Timestamp', timestamp);
 		request.headers.set('X-Netvisor-Authentication-TransactionId', transId);
-		this.calculateMac(request, transId, timestamp);
+		await this.calculateMac(request, transId, timestamp);
 		return request;
 	}
 
 	private async ensureConfig() {
 		if (!this.config) {
-			this.config = await this.configProvider.getConfig();
+			this.config = await (typeof this.configProvider.getConfig === 'function' ? this.configProvider.getConfig() : this.configProvider.getConfig);
 		}
 		if (!this.config) {
 			throw new Error('No config found');
