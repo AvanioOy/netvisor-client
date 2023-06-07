@@ -6,7 +6,7 @@ TODO
 
 ## Usage
 ```typescript
-import {ApiProvider, resources, EnvironmentConfigProvider} from "netvisor-client-node";
+import {ApiProvider, resources, EnvironmentConfigProvider} from "@avanio/netvisor-client";
 
 const conf = new EnviromentConfigProvider(); // remember to add all required fields to env if you use EnviromentConfigProvider
 const api = new ApiProvider(conf);
