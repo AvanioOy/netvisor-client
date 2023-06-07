@@ -56,9 +56,9 @@ const expect = chai.expect;
 
 describe('index.ts', () => {
 	describe('hello', () => {
-		it('should return customer', () => {
+		it('should return customer', async () => {
 			const parser = generalParser(customerListBuilder);
-			const result = parser(res);
+			const result = await parser(res);
 			expect(result).to.be.deep.equal({customers: expectedCustomers} as ICustomerRoot);
 		});
 	});

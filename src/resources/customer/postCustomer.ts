@@ -2,12 +2,11 @@ import {build} from '../../buildXml';
 import {IApiProvider} from '../../api';
 
 export interface Params {
-	method: 'Add' | 'Edit';
+	method: 'add' | 'edit';
 	id?: number;
 }
 
 export interface IBaseInformation {
-	internalIdentifier?: string;
 	externalIdentifier?: string;
 	organizationUnitNumber?: number;
 	name?: string;
@@ -76,7 +75,7 @@ export type ICustomer = {
 	};
 };
 
-export default async function (customer: ICustomer, api: IApiProvider, params: Params | undefined = undefined) {
+export default async function (api: IApiProvider, customer: ICustomer, params: Params) {
 	return api.request({
 		body: `<root><Customer>${build(customer)}</Customer></root>`,
 		method: 'POST',

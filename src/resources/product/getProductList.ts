@@ -1,5 +1,5 @@
 import {directArraySchemaValue, integerValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
-import {generalParser, parse} from '../../parse';
+import {generalParser} from '../../parse';
 import {IApiProvider} from '../../api';
 
 export interface IParams {
@@ -43,7 +43,7 @@ export default async function (api: IApiProvider, params: IParams | undefined = 
 	return api.request({
 		method: 'GET',
 		params,
-		parse: parse(generalParser(productListBuilder)),
+		parse: generalParser(productListBuilder),
 		path: '/productlist.nv',
 	});
 }

@@ -1,5 +1,5 @@
 import {directArraySchemaValue, integerValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
-import {generalParser, parse} from '../../parse';
+import {generalParser} from '../../parse';
 import {IApiProvider} from '../../api';
 
 export interface IParams {
@@ -19,7 +19,7 @@ export type ICustomer = {
 };
 
 const customerBuilder: XmlMappingSchema<ICustomer> = {
-	code: {mapper: stringValue, required: true},
+	code: {mapper: stringValue, emptyAsNull: false},
 	customerGroupId: {mapper: stringValue},
 	customerGroupName: {mapper: stringValue},
 	name: {mapper: stringValue, required: true},
@@ -40,7 +40,7 @@ export default async function (api: IApiProvider, params: IParams | undefined = 
 	return api.request({
 		method: 'GET',
 		params,
-		parse: parse(generalParser(customerListBuilder)),
+		parse: generalParser(customerListBuilder),
 		path: '/customerlist.nv',
 	});
 }

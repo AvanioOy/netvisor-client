@@ -11,4 +11,4 @@ export enum InventoryBatchLinkingMode {
 	OldestFirstByManufacturingDate = 8,
 }
 
-export {getProductList};
+export default {getProductList};

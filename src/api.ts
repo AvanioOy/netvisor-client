@@ -1,10 +1,11 @@
 import 'cross-fetch/polyfill';
 import crypto from 'crypto';
+import {parseResponseStatus} from './utils';
 
 export type NetvisorRequest<T, U> = {
 	path: string;
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-	parse?: (response: Response) => Promise<T>;
+	parse?: (body: string) => Promise<T>;
 	params?: U | undefined;
 	body?: string;
 };
@@ -26,15 +27,6 @@ export interface IConfig {
 
 export interface IConfigProvider {
 	getConfig: Promise<IConfig> | IConfig | (() => Promise<IConfig>);
-}
-
-export class ConfigProvider implements IConfigProvider {
-	private config: IConfig;
-	constructor(config: IConfig) {
-		this.config = config;
-	}
-
-	getConfig = async () => this.config;
 }
 
 export class EnviromentConfigProvider implements IConfigProvider {
@@ -61,6 +53,7 @@ export class EnviromentConfigProvider implements IConfigProvider {
 			if (process.env[field] == null) {
 				throw new Error(`${field} is not set`);
 			}
+			console.log(process.env[field]);
 		}
 		this.getConfig = {
 			client: process.env.NETVISOR_CLIENT ?? 'default',
@@ -82,21 +75,37 @@ export interface IApiProvider {
 
 export class ApiProvider implements IApiProvider {
 	private configProvider = {} as IConfigProvider;
-	constructor(configProvider: IConfigProvider) {
-		this.configProvider = configProvider;
+	constructor(configProvider: IConfigProvider | IConfig) {
+		if ('getConfig' in configProvider) {
+			this.configProvider = configProvider;
+		} else {
+			this.configProvider = {
+				getConfig: configProvider,
+			};
+		}
+	}
+
+	public async getConfig(): Promise<IConfig> {
+		return await (typeof this.configProvider.getConfig === 'function' ? this.configProvider.getConfig() : this.configProvider.getConfig);
 	}
 
 	public async request<T, U>(request: NetvisorRequest<T, U>): Promise<T | null> {
-		const config = await (typeof this.configProvider.getConfig === 'function' ? this.configProvider.getConfig() : this.configProvider.getConfig);
+		const config = await this.getConfig();
 		const url = `${netvisorEnvironment[config.env]}${request.path}`;
 		const withAuth = await this.handleRequest(url, request.params ?? {}, request.method, request.body || '');
 		const response = await fetch(withAuth);
 		if (!response.ok) throw new Error(response.statusText);
-		return request.parse ? request.parse(response) : null;
+		const xml = await response.text();
+		// parse status
+		const responseStatus = parseResponseStatus(xml);
+		if (responseStatus.status === 'FAILED') {
+			throw new Error(`Netvisor request failed: status ${responseStatus.status} with message ${xml}`);
+		}
+		return request.parse ? request.parse(xml) : null;
 	}
 
 	public async handleRequest(url: string, params: Record<string, string>, method: string, body: string): Promise<Request> {
-		const config = await (typeof this.configProvider.getConfig === 'function' ? this.configProvider.getConfig() : this.configProvider.getConfig);
+		const config = await this.getConfig();
 		const transId = `${Math.random() * 100000000000000000}`;
 		const timestamp = new Date().toISOString();
 
@@ -123,7 +132,7 @@ export class ApiProvider implements IApiProvider {
 	}
 
 	private async calculateMac(request: Request, transId: string, timestamp: string) {
-		const config = await (typeof this.configProvider.getConfig === 'function' ? this.configProvider.getConfig() : this.configProvider.getConfig);
+		const config = await this.getConfig();
 		const macString = `${request.url}&${config.client}&${config.userKey}&${timestamp}&${config.language}&${config.organisationId}&${transId}&${config.privateKey}&${config.partnerPrivateKey}`;
 		const mac = crypto.createHash('sha256').update(macString).digest('hex');
 		request.headers.set('X-Netvisor-Authentication-MAC', mac);
