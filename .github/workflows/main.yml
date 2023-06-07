@@ -9,6 +9,7 @@ env:
   # Setting an environment variable with the value of a configuration variable
   CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NETVISOR_ENV: ${{vars.NETVISOR_ENV}}
 
 jobs:
   build:
