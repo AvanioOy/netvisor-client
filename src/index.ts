@@ -1,4 +1,4 @@
-import {ApiProvider, IApiProvider, IConfig, IConfigProvider, NetvisorRequest, EnviromentConfigProvider} from './api';
+import {ApiProvider, EnviromentConfigProvider, IApiProvider, IConfig, IConfigProvider, NetvisorRequest} from './api';
 import {generalParser} from './parse';
 import resources from './resources';
 

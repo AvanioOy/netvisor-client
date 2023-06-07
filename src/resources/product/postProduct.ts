@@ -1,4 +1,4 @@
-import {AttributeObject, build} from '../../buildXml';
+import {build} from '../../buildXml';
 import {IApiProvider} from '../../api';
 import {InventoryBatchLinkingMode} from '.';
 import {NetVisorBoolean} from '..';
