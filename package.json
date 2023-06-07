@@ -6,6 +6,8 @@
   "scripts": {
     "build": "tsc",
     "test": "nyc mocha",
+    "test:unit": "nyc mocha test/unit",
+    "test:int": "nyc mocha test/integration",
     "coverage": "nyc report --reporter=lcovonly",
     "lint": "eslint src",
     "prepublishOnly": "npm run build"

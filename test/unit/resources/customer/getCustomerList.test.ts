@@ -1,7 +1,7 @@
 import 'mocha';
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import {IApiProvider, resources} from '../../../src';
+import {IApiProvider, resources} from '../../../../src';
 
 const expect = chai.expect;
 

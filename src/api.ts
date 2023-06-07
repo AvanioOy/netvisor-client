@@ -53,7 +53,6 @@ export class EnviromentConfigProvider implements IConfigProvider {
 			if (process.env[field] == null) {
 				throw new Error(`${field} is not set`);
 			}
-			console.log(process.env[field]);
 		}
 		this.getConfig = {
 			client: process.env.NETVISOR_CLIENT ?? 'default',

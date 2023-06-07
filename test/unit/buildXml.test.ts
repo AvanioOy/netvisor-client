@@ -1,6 +1,6 @@
 import 'mocha';
 import * as chai from 'chai';
-import {build} from '../src/buildXml';
+import {build} from '../../src/buildXml';
 
 const expect = chai.expect;
 

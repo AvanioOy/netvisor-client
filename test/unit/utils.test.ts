@@ -1,6 +1,6 @@
 import 'mocha';
 import * as chai from 'chai';
-import {parseResponseStatus} from '../src/utils';
+import {parseResponseStatus} from '../../src/utils';
 
 const expect = chai.expect;
 const errorMsg = 'Could not parse response status';
