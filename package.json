@@ -12,6 +12,9 @@
     "lint": "eslint src",
     "prepublishOnly": "npm run build"
   },
+  "files": [
+    "dist"
+  ],
   "mocha": {
     "exit": true,
     "extension": [
