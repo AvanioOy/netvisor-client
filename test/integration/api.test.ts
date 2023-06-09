@@ -37,4 +37,21 @@ describe('api tests', () => {
 		const root = await resources.purchaseinvoice.getPurchaseOrderList(api);
 		expect(root?.purchaseInvoices).to.be.an('array');
 	});
+	it('should be able to get a dimension list', async () => {
+		const root = await resources.dimension.getDimensionList(api);
+		expect(root?.dimensions).to.be.an('array');
+	});
+	it('should be able to post a dimension', async () => {
+		await resources.dimension.postDimension(
+			api,
+			{
+				name: 'Test',
+				item: `${Math.random() * 100000000000000000}`,
+			},
+			{
+				method: 'add',
+			},
+		);
+		expect(1).to.equal(1);
+	});
 });

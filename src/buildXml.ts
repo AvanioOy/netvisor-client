@@ -10,6 +10,7 @@ export type AttributeObject<T> = {
 
 export function build<T>(obj: AttributeObject<T>, path = ''): string {
 	return Object.keys(obj).reduce((acc, key) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let value = (obj as any)[key];
 		let attributes = '';
 		if (value?._attributes) {
