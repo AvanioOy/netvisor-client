@@ -1,6 +1,6 @@
 {
   "name": "@avanio/netvisor-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "./dist/index.js",
   "scripts": {
@@ -12,6 +12,9 @@
     "lint": "eslint src",
     "prepublishOnly": "npm run build"
   },
+  "files": [
+    "dist"
+  ],
   "mocha": {
     "exit": true,
     "extension": [
