@@ -66,7 +66,7 @@ export type IPurchaseInvoice = {
 	vendorTown: string;
 	vendorCountry: string;
 	fingerprint: string;
-	voucherID: number;
+	voucherID?: number;
 	isAccounted: string; // 'true' | 'false';
 	invoiceLines?: IPurchaseInvoiceLine[];
 };
@@ -274,11 +274,11 @@ export const purchaseInvoiceBuilder: XmlMappingSchema<IPurchaseInvoice> = {
 
 	voucherID: {
 		mapper: integerValue,
-		required: true,
 	},
 	isAccounted: {
 		mapper: stringValue,
 		required: true,
+		emptyAsNull: false,
 	},
 	invoiceLines: {
 		mapper: arraySchemaValue(purchaseInvoiceLineBuilder),

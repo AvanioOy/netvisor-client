@@ -64,9 +64,9 @@ describe('api tests', () => {
 	});
 	it('should be able to get multiple purchaseinvoices', async () => {
 		const purchaseInvoices = await resources.purchaseinvoice.getPurchaseInvoiceBatch(api, {
-			netvisorKeyList: '2,3',
+			netvisorKeyList: '2,3,5',
 			version: '2',
-		})
+		});
 		expect(purchaseInvoices?.purchaseInvoices).to.be.an('array');
 	});
 });
