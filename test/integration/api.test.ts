@@ -67,6 +67,6 @@ describe('api tests', () => {
 			netvisorKeyList: '2,3',
 			version: '2',
 		})
-		expect(purchaseInvoices).to.be.an('array');
+		expect(purchaseInvoices?.purchaseInvoices).to.be.an('array');
 	});
 });
