@@ -34,7 +34,7 @@ describe('api tests', () => {
 		expect(1).to.equal(1);
 	});
 	it('should be able to get a purchaseorder list', async () => {
-		const root = await resources.purchaseinvoice.getPurchaseOrderList(api);
+		const root = await resources.purchaseinvoice.getPurchaseInvoiceList(api);
 		expect(root?.purchaseInvoices).to.be.an('array');
 	});
 	it('should be able to get a dimension list', async () => {
@@ -53,5 +53,20 @@ describe('api tests', () => {
 			},
 		);
 		expect(1).to.equal(1);
+	});
+	it('should be able to a get a single purchaseinvoice', async () => {
+		const purchaseInvoice = await resources.purchaseinvoice.getPurchaseInvoice(api, {
+			netvisorKey: 2,
+			version: '2',
+		});
+
+		expect(purchaseInvoice).to.be.an('object');
+	});
+	it('should be able to get multiple purchaseinvoices', async () => {
+		const purchaseInvoices = await resources.purchaseinvoice.getPurchaseInvoiceBatch(api, {
+			netvisorKeyList: '2,3',
+			version: '2',
+		})
+		expect(purchaseInvoices).to.be.an('array');
 	});
 });

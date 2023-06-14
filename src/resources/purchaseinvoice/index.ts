@@ -1,3 +1,5 @@
-import getPurchaseOrderList from './getPurchaseInvoiceList';
+import getPurchaseInvoice from './getPurchaseInvoice';
+import getPurchaseInvoiceList from './getPurchaseInvoiceList';
+import getPurchaseInvoiceBatch from './getPurchaseInvoiceBatch';
 
-export default {getPurchaseOrderList};
+export default {getPurchaseInvoiceList, getPurchaseInvoice, getPurchaseInvoiceBatch};
