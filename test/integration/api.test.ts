@@ -4,6 +4,7 @@ import {ApiProvider, resources} from '../../src';
 import chaiAsPromised from 'chai-as-promised';
 import dotenv from 'dotenv';
 import {EnviromentConfigProvider} from '../../src/api';
+import {ISalesInvoice} from '../../src/resources/salesinvoice/postSalesInvoice';
 
 dotenv.config();
 
@@ -68,5 +69,74 @@ describe('api tests', () => {
 			version: '2',
 		});
 		expect(purchaseInvoices?.purchaseInvoices).to.be.an('array');
+	});
+
+	it('should be able to post a salesinvoice', async () => {
+		const salesInvoice: ISalesInvoice = {
+			salesInvoiceDate: {
+				_value: '2023-05-23',
+				_attributes: {
+					format: 'ansi',
+				},
+			},
+			salesInvoiceDueDate: {
+				_value: '2023-06-06',
+				_attributes: {
+					format: 'ansi',
+				},
+			},
+			salesInvoiceAmount: {
+				_value: '0,00',
+				_attributes: {
+					iso4217currencyCode: 'EUR',
+					currencyRate: '1,00',
+				},
+			},
+			invoiceType: 'invoice',
+			salesInvoiceStatus: {
+				_value: 'unsent',
+				_attributes: {
+					type: 'netvisor',
+				},
+			},
+			invoicingCustomeridentifier: {
+				_value: '1',
+				_attributes: {
+					type: 'customer',
+				},
+			},
+			invoiceLines: [
+				{
+					invoiceLine: {
+						salesInvoiceProductLine: {
+							productIdentifier: {
+								_value: 'Testi',
+								_attributes: {
+									type: 'customer',
+								},
+							},
+							productName: 'Testituote',
+							productunitPrice: {
+								_value: 20,
+								_attributes: {
+									type: 'net',
+								},
+							},
+							productVatPercentage: {
+								_value: 24,
+								_attributes: {
+									vatcode: 'KOMY',
+								},
+							},
+							salesInvoiceProductLineQuantity: 5,
+							salesInvoiceProductLineFreeText: 'vapaa txt',
+						},
+					},
+				},
+			],
+		};
+		await resources.salesinvoice.postSalesInvoice(api, salesInvoice, {
+			method: 'add',
+		});
 	});
 });
