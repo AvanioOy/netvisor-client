@@ -130,6 +130,10 @@ describe('api tests', () => {
 							},
 							salesInvoiceProductLineQuantity: 5,
 							salesInvoiceProductLineFreeText: 'vapaa txt',
+							dimension: {
+								dimensionName: 'Test',
+								dimensionItem: 'test_1',
+							},
 						},
 					},
 				},

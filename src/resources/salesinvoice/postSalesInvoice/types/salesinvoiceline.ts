@@ -43,6 +43,10 @@ export default interface IInvoiceLine {
 			format: 'ansi';
 		};
 	};
+	dimension?: {
+		dimensionName: string;
+		dimensionItem: string;
+	};
 	orderNumber?: string;
 	proposedAccount?: {
 		_value: number;
