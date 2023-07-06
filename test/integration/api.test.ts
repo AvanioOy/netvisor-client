@@ -139,4 +139,10 @@ describe('api tests', () => {
 			method: 'add',
 		});
 	});
+	it('shpuld be able to get a salesinvoicelist', async () => {
+		const salesInvoice = await resources.salesinvoice.getSalesInvoiceList(api);
+		expect(salesInvoice).to.be.an('object');
+		expect(salesInvoice?.salesInvoices).to.be.an('array');
+		expect(salesInvoice?.salesInvoices).to.have.length.greaterThan(0);
+	});
 });
