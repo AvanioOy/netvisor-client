@@ -128,7 +128,6 @@ export default interface ISalesInvoice {
 		};
 	};
 	accountDimensionText?: string;
-	collectionCosts?: CodecState;
 	isThirdPartySales?: NetVisorBoolean;
 	invoiceLines: {
 		invoiceLine: {
