@@ -51,4 +51,8 @@ export default interface IInvoiceLine {
 		};
 	};
 	accountDimensionText?: string;
+	dimension?: {
+		dimensionName: string;
+		dimensionItem: string;
+	}[];
 }

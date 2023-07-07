@@ -130,6 +130,12 @@ describe('api tests', () => {
 							},
 							salesInvoiceProductLineQuantity: 5,
 							salesInvoiceProductLineFreeText: 'vapaa txt',
+							dimension: [
+								{
+									dimensionName: 'Test',
+									dimensionItem: '1',
+								},
+							],
 						},
 					},
 				},
@@ -139,10 +145,18 @@ describe('api tests', () => {
 			method: 'add',
 		});
 	});
-	it('shpuld be able to get a salesinvoicelist', async () => {
+	it('should be able to get a salesinvoicelist', async () => {
 		const salesInvoice = await resources.salesinvoice.getSalesInvoiceList(api);
 		expect(salesInvoice).to.be.an('object');
 		expect(salesInvoice?.salesInvoices).to.be.an('array');
 		expect(salesInvoice?.salesInvoices).to.have.length.greaterThan(0);
+	});
+	it('should be able to get a salesinvoice batch', async () => {
+		const salesInvoices = await resources.salesinvoice.getSalesInvoiceBatch(api, {
+			netvisorKeyList: '1017,1018,1019,1025',
+		});
+		expect(salesInvoices).to.be.an('object');
+		expect(salesInvoices?.salesInvoices).to.be.an('array');
+		expect(salesInvoices?.salesInvoices).to.have.length.greaterThan(0);
 	});
 });
