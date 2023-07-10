@@ -39,18 +39,16 @@ export function insertedDocumentsParser(): (xml: string) => Promise<number> {
 	const repliesBuilder: XmlMappingSchema<IInsertedDocuments['Replies']> = {
 		InsertedDataIdentifier: {
 			mapper: integerValue,
-			required: true,
 		},
 	};
 
 	const insertedDocumentsBuilder: XmlMappingSchema<IInsertedDocuments> = {
 		Replies: {
 			mapper: objectSchemaValue(repliesBuilder),
-			required: true,
 		},
 	};
 	return async function (xml: string) {
 		const data = await generalRootParser<IInsertedDocuments>(insertedDocumentsBuilder)(xml);
-		return data.Replies.InsertedDataIdentifier;
+		return data?.Replies?.InsertedDataIdentifier ?? null;
 	};
 }

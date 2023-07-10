@@ -20,7 +20,7 @@ describe('api tests', () => {
 		expect(root?.customers).to.be.an('array');
 		expect(root?.customers).to.have.length.greaterThan(0);
 	});
-	it('should be able to post a customer', async () => {
+	it('should be able to post a customer and edit', async () => {
 		const id = await resources.customer.postCustomer(
 			api,
 			{
@@ -33,6 +33,19 @@ describe('api tests', () => {
 			},
 		);
 		expect(id).to.be.a('number');
+
+		const edit = await resources.customer.postCustomer(
+			api,
+			{
+				customerBaseInformation: {
+					name: 'Test 2',
+				},
+			},
+			{
+				method: 'edit',
+				id: id as number,
+			});
+		expect(edit).to.be.equal(null);
 	});
 	it('should be able to get a customer', async () => {
 		const root = await resources.customer.getCustomer(api, {

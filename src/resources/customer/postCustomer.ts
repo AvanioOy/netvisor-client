@@ -15,7 +15,7 @@ export interface IBaseInformation {
 	streetAddress?: string;
 	additionalAddressLine?: string;
 	city?: string;
-	postalCode?: string;
+	postCode?: string;
 	country?: string;
 	countryCode?: string;
 	phoneNumber?: string;
