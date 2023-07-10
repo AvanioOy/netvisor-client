@@ -34,6 +34,13 @@ describe('api tests', () => {
 		);
 		expect(id).to.be.a('number');
 	});
+	it('should be able to get a customer', async () => {
+		const root = await resources.customer.getCustomer(api, {
+			id: 1177,
+		});
+		expect(root?.customer).to.be.an('object');
+	});
+
 	it('should be able to get a purchaseorder list', async () => {
 		const root = await resources.purchaseinvoice.getPurchaseInvoiceList(api);
 		expect(root?.purchaseInvoices).to.be.an('array');
