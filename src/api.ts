@@ -105,7 +105,7 @@ export class ApiProvider implements IApiProvider {
 
 	public async handleRequest(url: string, params: Record<string, string>, method: string, body: string): Promise<Request> {
 		const config = await this.getConfig();
-		const transId = `${Math.random() * 100000000000000000}`;
+		const transId = `${Math.floor(Math.random() * 100000000000000000)}`;
 		const timestamp = new Date().toISOString();
 
 		if (params && Object.keys(params).length > 0) {

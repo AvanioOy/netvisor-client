@@ -21,7 +21,7 @@ describe('api tests', () => {
 		expect(root?.customers).to.have.length.greaterThan(0);
 	});
 	it('should be able to post a customer', async () => {
-		await resources.customer.postCustomer(
+		const id = await resources.customer.postCustomer(
 			api,
 			{
 				customerBaseInformation: {
@@ -32,7 +32,7 @@ describe('api tests', () => {
 				method: 'add',
 			},
 		);
-		expect(1).to.equal(1);
+		expect(id).to.be.a('number');
 	});
 	it('should be able to get a purchaseorder list', async () => {
 		const root = await resources.purchaseinvoice.getPurchaseInvoiceList(api);

@@ -1,4 +1,4 @@
-import {objectSchemaValue, rootParser, XmlMappingSchema} from '@avanio/xml-mapper';
+import {objectSchemaValue, rootParser, XmlMappingSchema, integerValue} from '@avanio/xml-mapper';
 import {DOMParser} from '@xmldom/xmldom';
 
 export function generalParser<T extends Record<string, unknown>>(schema: XmlMappingSchema<T>): (xml: string) => Promise<T> {
@@ -26,5 +26,31 @@ export function generalRootParser<T extends Record<string, unknown>>(schema: Xml
 		return rootParser<IRoot<T>>(doc.documentElement, rootBuilder, {
 			ignoreCase: true,
 		}).root;
+	};
+}
+
+export interface IInsertedDocuments extends Record<string, unknown> {
+	Replies: {
+		InsertedDataIdentifier: number;
+	};
+}
+
+export function insertedDocumentsParser(): (xml: string) => Promise<number> {
+	const repliesBuilder: XmlMappingSchema<IInsertedDocuments['Replies']> = {
+		InsertedDataIdentifier: {
+			mapper: integerValue,
+			required: true,
+		},
+	};
+
+	const insertedDocumentsBuilder: XmlMappingSchema<IInsertedDocuments> = {
+		Replies: {
+			mapper: objectSchemaValue(repliesBuilder),
+			required: true,
+		},
+	};
+	return async function (xml: string) {
+		const data = await generalRootParser<IInsertedDocuments>(insertedDocumentsBuilder)(xml);
+		return data.Replies.InsertedDataIdentifier;
 	};
 }

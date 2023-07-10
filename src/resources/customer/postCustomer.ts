@@ -1,5 +1,6 @@
 import {build} from '../../buildXml';
 import {IApiProvider} from '../../api';
+import {insertedDocumentsParser} from '../../parse';
 
 export interface Params {
 	method: 'add' | 'edit';
@@ -80,6 +81,7 @@ export default async function (api: IApiProvider, customer: ICustomer, params: P
 		body: `<root><Customer>${build(customer)}</Customer></root>`,
 		method: 'POST',
 		params,
+		parse: insertedDocumentsParser(),
 		path: '/customer.nv',
 	});
 }
