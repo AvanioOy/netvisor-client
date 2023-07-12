@@ -1,4 +1,4 @@
-import {objectSchemaValue, rootParser, XmlMappingSchema, integerValue} from '@avanio/xml-mapper';
+import {integerValue, objectSchemaValue, rootParser, XmlMappingSchema} from '@avanio/xml-mapper';
 import {DOMParser} from '@xmldom/xmldom';
 
 export function generalParser<T extends Record<string, unknown>>(schema: XmlMappingSchema<T>): (xml: string) => Promise<T> {
@@ -27,6 +27,35 @@ export function generalRootParser<T extends Record<string, unknown>>(schema: Xml
 			ignoreCase: true,
 		}).root;
 	};
+}
+
+export interface BatchParserOpts<T, U> {
+	schema: XmlMappingSchema<T>;
+	key: keyof T;
+	listSchema: XmlMappingSchema<U>;
+	listKey: keyof U;
+	expectList: boolean;
+}
+/**
+ * Helper for parsing batch details
+ * It is assumed that schema contains only a single field
+ */
+export function batchRootParser<T extends Record<string, unknown>, U extends Record<string, unknown>>(
+	opts: BatchParserOpts<T, U>,
+): (xml: string) => Promise<U> {
+	if (!opts.expectList) {
+		return async function (xml: string) {
+			const parsed = (await generalRootParser(opts.schema)(xml)) as T;
+			if (!(opts.key in parsed)) {
+				throw new Error('Key not present');
+			}
+			// note: this isn't safe if U contains more than one key
+			return {
+				[opts.listKey]: [parsed[opts.key]],
+			} as U;
+		};
+	}
+	return generalRootParser(opts.listSchema);
 }
 
 export interface IInsertedDocuments extends Record<string, unknown> {

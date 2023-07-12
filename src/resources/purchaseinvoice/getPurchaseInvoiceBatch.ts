@@ -1,5 +1,5 @@
-import {arraySchemaValue, dateValue, integerValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
-import {generalRootParser} from '../../parse';
+import {arraySchemaValue, dateValue, integerValue, objectSchemaValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
+import {batchRootParser} from '../../parse';
 import {IApiProvider} from '../../api';
 
 export interface IParams {
@@ -73,6 +73,10 @@ export type IPurchaseInvoice = {
 
 export type IPurchaseInvoiceRoot = {
 	purchaseInvoices: IPurchaseInvoice[];
+};
+
+export type IPurchaseInvoiceSingleRoot = {
+	purchaseInvoice: IPurchaseInvoice;
 };
 
 export const purchaseDimensionBuilder: XmlMappingSchema<IPurchaseInvoiceDimension> = {
@@ -292,11 +296,25 @@ export const purchaseInvoiceRootBuilder: XmlMappingSchema<IPurchaseInvoiceRoot> 
 	},
 };
 
+export const purchaseInvoiceSingleRootBuilder: XmlMappingSchema<IPurchaseInvoiceSingleRoot> = {
+	purchaseInvoice: {
+		mapper: objectSchemaValue(purchaseInvoiceBuilder),
+		required: true,
+	},
+};
+
 export default async function (api: IApiProvider, params: IParams | undefined = undefined) {
+	const numIds = params?.netvisorKeyList?.split(',').length;
 	return api.request({
 		method: 'GET',
 		params,
-		parse: generalRootParser(purchaseInvoiceRootBuilder),
+		parse: batchRootParser({
+			listSchema: purchaseInvoiceRootBuilder,
+			listKey: 'purchaseInvoices',
+			schema: purchaseInvoiceSingleRootBuilder,
+			key: 'purchaseInvoice',
+			expectList: numIds !== 1,
+		}),
 		path: '/getpurchaseinvoice.nv',
 	});
 }

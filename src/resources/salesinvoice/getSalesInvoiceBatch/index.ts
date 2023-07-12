@@ -2,15 +2,22 @@
  * NOTE: This file is partially typed
  */
 import {ApiProvider} from '../../../api';
-import {generalRootParser} from '../../../parse';
+import {batchRootParser} from '../../../parse';
 import {Params} from './types';
-import salesInvoiceRootBuilder from './schema';
+import {salesInvoiceRootBuilder, salesInvoiceSingleRootBuilder} from './schema';
 
 export default async function (api: ApiProvider, params: Params | undefined = undefined) {
+	const numIds = params?.netvisorKeyList?.split(',').length;
 	return api.request({
 		method: 'GET',
 		params,
-		parse: generalRootParser(salesInvoiceRootBuilder),
+		parse: batchRootParser({
+			schema: salesInvoiceSingleRootBuilder,
+			key: 'salesInvoice',
+			listSchema: salesInvoiceRootBuilder,
+			listKey: 'salesInvoices',
+			expectList: numIds !== 1,
+		}),
 		path: '/getsalesinvoice.nv',
 	});
 }

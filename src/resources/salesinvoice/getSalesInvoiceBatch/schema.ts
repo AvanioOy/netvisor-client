@@ -1,8 +1,12 @@
 import {IDimension, ISalesInvoice, ISalesInvoiceProductLine, ISalesInvoiceRow} from './types';
-import {XmlMappingSchema, arraySchemaValue, dateValue, integerValue, objectSchemaValue, stringValue, inlineArraySchemaValue} from '@avanio/xml-mapper';
+import {arraySchemaValue, dateValue, inlineArraySchemaValue, integerValue, objectSchemaValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
 
 export type ISalesInvoiceRoot = {
 	salesInvoices: ISalesInvoice[];
+};
+
+export type ISalesInvoiceSingleRoot = {
+	salesInvoice: ISalesInvoice;
 };
 
 const dimensionBuilder: XmlMappingSchema<IDimension> = {
@@ -70,4 +74,8 @@ const salesInvoiceRootBuilder: XmlMappingSchema<ISalesInvoiceRoot> = {
 	salesInvoices: {mapper: arraySchemaValue(salesInvoiceBuilder), required: true},
 };
 
-export default salesInvoiceRootBuilder;
+const salesInvoiceSingleRootBuilder: XmlMappingSchema<ISalesInvoiceSingleRoot> = {
+	salesInvoice: {mapper: objectSchemaValue(salesInvoiceBuilder), required: true},
+};
+
+export {salesInvoiceRootBuilder, salesInvoiceSingleRootBuilder};

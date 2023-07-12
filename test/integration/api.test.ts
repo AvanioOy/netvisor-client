@@ -4,7 +4,7 @@ import {ApiProvider, resources} from '../../src';
 import chaiAsPromised from 'chai-as-promised';
 import dotenv from 'dotenv';
 import {EnviromentConfigProvider} from '../../src/api';
-import {ISalesInvoice} from '../../src/resources/salesinvoice/postSalesInvoice';
+import { ISalesInvoice } from '../../src/resources/salesinvoice/postSalesInvoice/types';
 
 dotenv.config();
 
@@ -13,6 +13,76 @@ chai.use(chaiAsPromised);
 
 const conf = new EnviromentConfigProvider();
 const api = new ApiProvider(conf);
+
+const salesInvoice: ISalesInvoice = {
+	salesInvoiceDate: {
+		_value: '2023-05-23',
+		_attributes: {
+			format: 'ansi',
+		},
+	},
+	salesInvoiceDueDate: {
+		_value: '2023-06-06',
+		_attributes: {
+			format: 'ansi',
+		},
+	},
+	salesInvoiceAmount: {
+		_value: '0,00',
+		_attributes: {
+			iso4217currencyCode: 'EUR',
+			currencyRate: '1,00',
+		},
+	},
+	invoiceType: 'invoice',
+	salesInvoiceStatus: {
+		_value: 'unsent',
+		_attributes: {
+			type: 'netvisor',
+		},
+	},
+	invoicingCustomeridentifier: {
+		_value: '1',
+		_attributes: {
+			type: 'customer',
+		},
+	},
+	invoiceLines: [
+		{
+			invoiceLine: {
+				salesInvoiceProductLine: {
+					productIdentifier: {
+						_value: 'Testi',
+						_attributes: {
+							type: 'customer',
+						},
+					},
+					productName: 'Testituote',
+					productunitPrice: {
+						_value: 20,
+						_attributes: {
+							type: 'net',
+						},
+					},
+					productVatPercentage: {
+						_value: 24,
+						_attributes: {
+							vatcode: 'KOMY',
+						},
+					},
+					salesInvoiceProductLineQuantity: 5,
+					salesInvoiceProductLineFreeText: 'vapaa txt',
+					dimension: [
+						{
+							dimensionName: 'Test',
+							dimensionItem: '1',
+						},
+					],
+				},
+			},
+		},
+	],
+};
 
 describe('api tests', () => {
 	it('it should get a customer list', async () => {
@@ -48,8 +118,22 @@ describe('api tests', () => {
 		expect(edit).to.be.equal(null);
 	});
 	it('should be able to get a customer', async () => {
+		const id = await resources.customer.postCustomer(
+			api,
+			{
+				customerBaseInformation: {
+					name: 'Test',
+				},
+			},
+			{
+				method: 'add',
+			},
+		);
+		if(id == null){
+			throw new Error("Failed to create customer");
+		}
 		const root = await resources.customer.getCustomer(api, {
-			id: 1177,
+			id,
 		});
 		expect(root?.customer).to.be.an('object');
 	});
@@ -91,76 +175,15 @@ describe('api tests', () => {
 		expect(purchaseInvoices?.purchaseInvoices).to.be.an('array');
 	});
 
+	it("should be able to get single purchaseinvoice", async() => {
+		const purchaseInvoices = await resources.purchaseinvoice.getPurchaseInvoiceBatch(api, {
+			netvisorKeyList: '2',
+			version: '2',
+		});
+		expect(purchaseInvoices?.purchaseInvoices).to.be.an('array');
+	})
+
 	it('should be able to post a salesinvoice', async () => {
-		const salesInvoice: ISalesInvoice = {
-			salesInvoiceDate: {
-				_value: '2023-05-23',
-				_attributes: {
-					format: 'ansi',
-				},
-			},
-			salesInvoiceDueDate: {
-				_value: '2023-06-06',
-				_attributes: {
-					format: 'ansi',
-				},
-			},
-			salesInvoiceAmount: {
-				_value: '0,00',
-				_attributes: {
-					iso4217currencyCode: 'EUR',
-					currencyRate: '1,00',
-				},
-			},
-			invoiceType: 'invoice',
-			salesInvoiceStatus: {
-				_value: 'unsent',
-				_attributes: {
-					type: 'netvisor',
-				},
-			},
-			invoicingCustomeridentifier: {
-				_value: '1',
-				_attributes: {
-					type: 'customer',
-				},
-			},
-			invoiceLines: [
-				{
-					invoiceLine: {
-						salesInvoiceProductLine: {
-							productIdentifier: {
-								_value: 'Testi',
-								_attributes: {
-									type: 'customer',
-								},
-							},
-							productName: 'Testituote',
-							productunitPrice: {
-								_value: 20,
-								_attributes: {
-									type: 'net',
-								},
-							},
-							productVatPercentage: {
-								_value: 24,
-								_attributes: {
-									vatcode: 'KOMY',
-								},
-							},
-							salesInvoiceProductLineQuantity: 5,
-							salesInvoiceProductLineFreeText: 'vapaa txt',
-							dimension: [
-								{
-									dimensionName: 'Test',
-									dimensionItem: '1',
-								},
-							],
-						},
-					},
-				},
-			],
-		};
 		await resources.salesinvoice.postSalesInvoice(api, salesInvoice, {
 			method: 'add',
 		});
@@ -172,11 +195,35 @@ describe('api tests', () => {
 		expect(salesInvoice?.salesInvoices).to.have.length.greaterThan(0);
 	});
 	it('should be able to get a salesinvoice batch', async () => {
+		const createdId = await resources.salesinvoice.postSalesInvoice(api, salesInvoice, {
+			method: 'add',
+		});
+		if(createdId == null){
+			throw new Error('failed to post sales invoice')
+		}
+		await resources.salesinvoice.postSalesInvoice(api, salesInvoice, {
+			method: 'add',
+		});
 		const salesInvoices = await resources.salesinvoice.getSalesInvoiceBatch(api, {
-			netvisorKeyList: '1017,1018,1019,1025',
+			netvisorKeyList: [createdId, createdId+1].join(","),
 		});
 		expect(salesInvoices).to.be.an('object');
 		expect(salesInvoices?.salesInvoices).to.be.an('array');
-		expect(salesInvoices?.salesInvoices).to.have.length.greaterThan(0);
+		expect(salesInvoices?.salesInvoices).to.have.lengthOf(2);
 	});
+	it('should be able to a single invoice from salesinvoice batch', async() => {
+		const createdId = await resources.salesinvoice.postSalesInvoice(api, salesInvoice, {
+			method: 'add',
+		});
+		if(createdId == null){
+			throw new Error('Failed to post sales invoice');
+		}
+		
+		const salesInvoices = await resources.salesinvoice.getSalesInvoiceBatch(api, {
+			netvisorKeyList: createdId.toString(),
+		});
+		expect(salesInvoices).to.be.an('object');
+		expect(salesInvoices?.salesInvoices).to.be.an('array');
+		expect(salesInvoices?.salesInvoices).to.have.lengthOf(1);
+	})
 });

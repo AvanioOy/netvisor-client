@@ -1,5 +1,5 @@
 import {ICustomer} from './types';
-import {XmlMappingSchema, integerValue, objectSchemaValue, stringValue} from '@avanio/xml-mapper';
+import {integerValue, objectSchemaValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
 
 const baseInformationBuilder: XmlMappingSchema<ICustomer['customerBaseInformation']> = {
 	netvisorKey: {
