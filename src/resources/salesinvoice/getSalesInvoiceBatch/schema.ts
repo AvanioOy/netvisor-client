@@ -68,6 +68,9 @@ const salesInvoiceBuilder: XmlMappingSchema<ISalesInvoice> = {
 	invoiceLines: {
 		mapper: arraySchemaValue(salesInvoiceRowBuilder),
 	},
+	salesInvoiceOurReference: {
+		mapper: stringValue,
+	},
 };
 
 const salesInvoiceRootBuilder: XmlMappingSchema<ISalesInvoiceRoot> = {

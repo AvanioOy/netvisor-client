@@ -4,7 +4,7 @@ import {ApiProvider, resources} from '../../src';
 import chaiAsPromised from 'chai-as-promised';
 import dotenv from 'dotenv';
 import {EnviromentConfigProvider} from '../../src/api';
-import { ISalesInvoice } from '../../src/resources/salesinvoice/postSalesInvoice/types';
+import {ISalesInvoice} from '../../src/resources/salesinvoice/postSalesInvoice/types';
 
 dotenv.config();
 
@@ -41,6 +41,7 @@ const salesInvoice: ISalesInvoice = {
 			type: 'netvisor',
 		},
 	},
+	salesInvoiceOurReference: 'Test',
 	invoicingCustomeridentifier: {
 		_value: '1',
 		_attributes: {
@@ -114,7 +115,8 @@ describe('api tests', () => {
 			{
 				method: 'edit',
 				id: id as number,
-			});
+			},
+		);
 		expect(edit).to.be.equal(null);
 	});
 	it('should be able to get a customer', async () => {
@@ -129,8 +131,8 @@ describe('api tests', () => {
 				method: 'add',
 			},
 		);
-		if(id == null){
-			throw new Error("Failed to create customer");
+		if (id == null) {
+			throw new Error('Failed to create customer');
 		}
 		const root = await resources.customer.getCustomer(api, {
 			id,
@@ -175,13 +177,13 @@ describe('api tests', () => {
 		expect(purchaseInvoices?.purchaseInvoices).to.be.an('array');
 	});
 
-	it("should be able to get single purchaseinvoice", async() => {
+	it('should be able to get single purchaseinvoice', async () => {
 		const purchaseInvoices = await resources.purchaseinvoice.getPurchaseInvoiceBatch(api, {
 			netvisorKeyList: '2',
 			version: '2',
 		});
 		expect(purchaseInvoices?.purchaseInvoices).to.be.an('array');
-	})
+	});
 
 	it('should be able to post a salesinvoice', async () => {
 		await resources.salesinvoice.postSalesInvoice(api, salesInvoice, {
@@ -198,32 +200,32 @@ describe('api tests', () => {
 		const createdId = await resources.salesinvoice.postSalesInvoice(api, salesInvoice, {
 			method: 'add',
 		});
-		if(createdId == null){
-			throw new Error('failed to post sales invoice')
+		if (createdId == null) {
+			throw new Error('failed to post sales invoice');
 		}
 		await resources.salesinvoice.postSalesInvoice(api, salesInvoice, {
 			method: 'add',
 		});
 		const salesInvoices = await resources.salesinvoice.getSalesInvoiceBatch(api, {
-			netvisorKeyList: [createdId, createdId+1].join(","),
+			netvisorKeyList: [createdId, createdId + 1].join(','),
 		});
 		expect(salesInvoices).to.be.an('object');
 		expect(salesInvoices?.salesInvoices).to.be.an('array');
 		expect(salesInvoices?.salesInvoices).to.have.lengthOf(2);
 	});
-	it('should be able to a single invoice from salesinvoice batch', async() => {
+	it('should be able to a single invoice from salesinvoice batch', async () => {
 		const createdId = await resources.salesinvoice.postSalesInvoice(api, salesInvoice, {
 			method: 'add',
 		});
-		if(createdId == null){
+		if (createdId == null) {
 			throw new Error('Failed to post sales invoice');
 		}
-		
+
 		const salesInvoices = await resources.salesinvoice.getSalesInvoiceBatch(api, {
 			netvisorKeyList: createdId.toString(),
 		});
 		expect(salesInvoices).to.be.an('object');
 		expect(salesInvoices?.salesInvoices).to.be.an('array');
 		expect(salesInvoices?.salesInvoices).to.have.lengthOf(1);
-	})
+	});
 });

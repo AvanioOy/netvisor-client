@@ -7,5 +7,6 @@ export default interface ISalesInvoice extends Record<string, unknown> {
 	salesInvoiceAmount: string;
 	invoiceStatus: string;
 	salesInvoiceDueDate: Date;
+	salesInvoiceOurReference: string;
 	invoiceLines: ISalesInvoiceRow[];
 }
