@@ -1,6 +1,7 @@
-import {arraySchemaValue, dateValue, integerValue, objectSchemaValue, stringValue, XmlMappingSchema} from '@avanio/xml-mapper';
+import {arraySchemaValue, dateValue, integerValue, objectSchemaValue, stringValue, XmlMappingSchema, numberValue} from '@avanio/xml-mapper';
 import {batchRootParser} from '../../parse';
 import {IApiProvider} from '../../api';
+import { parseNumber } from '../../utils';
 
 export interface IParams {
 	netvisorKeyList?: string;
@@ -104,11 +105,11 @@ export const purchaseInvoiceLineBuilder: XmlMappingSchema<IPurchaseInvoiceLine> 
 		required: true,
 	},
 	lineSum: {
-		mapper: integerValue,
+		mapper: numberValue({parser: parseNumber}),
 		required: true,
 	},
 	lineNetSum: {
-		mapper: integerValue,
+		mapper: numberValue({parser: parseNumber}),
 		required: true,
 	},
 	unitPrice: {

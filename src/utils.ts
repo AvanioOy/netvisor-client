@@ -30,3 +30,7 @@ export function parseResponseStatus(xml: string): IResponseStatus {
 		timestamp,
 	};
 }
+
+export function parseNumber(value: string): number {
+	return parseFloat(value.replace(',', '.'));
+}
