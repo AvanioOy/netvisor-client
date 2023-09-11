@@ -1,7 +1,7 @@
 import {arraySchemaValue, dateValue, integerValue, objectSchemaValue, stringValue, XmlMappingSchema, numberValue} from '@avanio/xml-mapper';
 import {batchRootParser} from '../../parse';
 import {IApiProvider} from '../../api';
-import { parseNumber } from '../../utils';
+import {parseNumber} from '../../utils';
 
 export interface IParams {
 	netvisorKeyList?: string;
