@@ -32,6 +32,9 @@ const salesInvoiceProductLineBuilder: XmlMappingSchema<ISalesInvoiceProductLine>
 	dimension: {
 		mapper: inlineArraySchemaValue('dimension', dimensionBuilder),
 	},
+	productVatPercentage: {
+		mapper: integerValue,
+	},
 };
 
 const salesInvoiceRowBuilder: XmlMappingSchema<ISalesInvoiceRow> = {
