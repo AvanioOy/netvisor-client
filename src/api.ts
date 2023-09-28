@@ -12,6 +12,7 @@ export type NetvisorRequest<T, U> = {
 
 export const netvisorEnvironment = {
 	isv: 'https://isvapi.netvisor.fi',
+	prod: 'https://integration.netvisor.fi'
 } as const;
 
 export interface IConfig {
